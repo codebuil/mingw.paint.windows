@@ -2,12 +2,14 @@
  HDC hdc;
     PAINTSTRUCT ps;
     RECT rect;
-
+    int iiii=0;
+// Ponto para armPOINT ptLastClickazenar as coordenadas do último clique do mouse
+POINT ptLastClick[500];
 // Protótipo da função de tratamento de mensagens
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-// Ponto para armazenar as coordenadas do último clique do mouse
-POINT ptLastClick;
+
+
 
 // Função principal
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
@@ -54,15 +56,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 // Função de tratamento de mensagens
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    int n=0;
     switch (message)
     {
     case WM_LBUTTONDOWN:
         // Obter as coordenadas do clique do mouse
-        ptLastClick.x = LOWORD(lParam);
-        ptLastClick.y = HIWORD(lParam);
+        ptLastClick[iiii].x = LOWORD(lParam);
+        ptLastClick[iiii].y = HIWORD(lParam);
+        
 
         // Redesenha a janela para exibir o círculo
         InvalidateRect(hWnd, NULL, TRUE);
+        iiii++;
         break;
 
     
@@ -73,15 +78,16 @@ case WM_PAINT:
             // Define a cor de fundo da janela para azul
             HBRUSH hBrush = CreateSolidBrush(RGB(0, 0, 255));
             FillRect(hdc, &ps.rcPaint, hBrush);
+            
             DeleteObject(hBrush);
             
             // Define a cor das linhas para branco
             HPEN hPen = CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
             SelectObject(hdc, hPen);
-            
-            // Desenha as linhas com base nas coordenadas fornecidas
-            Ellipse(hdc, ptLastClick.x - 5, ptLastClick.y - 5, ptLastClick.x + 5, ptLastClick.y + 5);
-            
+            for(n=0;n<iiii;n++){
+             // Desenha as linhas com base nas coordenadas fornecidas
+                Ellipse(hdc, ptLastClick[n].x - 5, ptLastClick[n].y - 5, ptLastClick[n].x + 5, ptLastClick[n].y + 5);
+            }
             // Libera os recursos utilizados
             DeleteObject(hPen);
             EndPaint(hWnd, &ps);
